@@ -7,10 +7,16 @@ AMainCharacter::AMainCharacter() :
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	FPSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FPSCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FPSCameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
-	FPSCameraComponent->bUsePawnControlRotation = true;
+	EyeView = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	EyeView->SetupAttachment(GetCapsuleComponent());
+	EyeView->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
+	EyeView->bUsePawnControlRotation = true;
+
+	flashlight = CreateDefaultSubobject<UFlashlightComponent>(TEXT("Flashlight"));
+	flashlight->SetupAttachment(EyeView);
+
+	FlashlightMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlashlightMesh"));
+	FlashlightMeshComponent->SetupAttachment(EyeView);
 
 	GetMesh()->SetOwnerNoSee(true);
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -19,13 +25,11 @@ AMainCharacter::AMainCharacter() :
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -46,6 +50,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::startCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::stopCrouch);
+
+	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &AMainCharacter::toggleFlashlight);
 }
 
 
@@ -92,4 +98,10 @@ void AMainCharacter::startCrouch()
 void AMainCharacter::stopCrouch()
 {
 	UnCrouch();
+}
+
+void AMainCharacter::toggleFlashlight()
+{
+	if (flashlight)
+		flashlight->toggleLight();
 }

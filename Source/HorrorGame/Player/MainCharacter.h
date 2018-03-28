@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Engine.h"
+#include "FlashlightComponent.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -16,17 +17,19 @@ class HORRORGAME_API AMainCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere) UCameraComponent* FPSCameraComponent;
+	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
+	UPROPERTY(EditAnywhere) UFlashlightComponent *flashlight;
+	UPROPERTY(EditAnywhere) UStaticMeshComponent *FlashlightMeshComponent;
 	UPROPERTY(EditAnywhere) float sprintModificator;
-
-protected:
-	virtual void BeginPlay() override;
 
 public:	
 	AMainCharacter();
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 	UFUNCTION() void moveForward(float Value);
@@ -40,4 +43,6 @@ private:
 
 	UFUNCTION() void startCrouch();
 	UFUNCTION() void stopCrouch();
+
+	UFUNCTION() void toggleFlashlight();
 };
