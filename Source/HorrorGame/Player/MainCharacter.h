@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Engine.h"
-#include "FlashlightComponent.h"
+#include "Flashlight.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -18,8 +18,7 @@ class HORRORGAME_API AMainCharacter : public ACharacter
 
 public:
 	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
-	UPROPERTY(EditAnywhere) UFlashlightComponent *flashlight;
-	UPROPERTY(EditAnywhere) UStaticMeshComponent *FlashlightMeshComponent;
+	UPROPERTY(VisibleAnywhere) AFlashlight *flashlight;
 	UPROPERTY(EditAnywhere) float sprintModificator;
 
 public:	

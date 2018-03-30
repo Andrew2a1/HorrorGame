@@ -12,11 +12,7 @@ AMainCharacter::AMainCharacter() :
 	EyeView->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 	EyeView->bUsePawnControlRotation = true;
 
-	flashlight = CreateDefaultSubobject<UFlashlightComponent>(TEXT("Flashlight"));
-	flashlight->SetupAttachment(EyeView);
-
-	FlashlightMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FlashlightMesh"));
-	FlashlightMeshComponent->SetupAttachment(EyeView);
+	flashlight = CreateDefaultSubobject<AFlashlight>(TEXT("Flashlight"));
 
 	GetMesh()->SetOwnerNoSee(true);
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -25,6 +21,10 @@ AMainCharacter::AMainCharacter() :
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	flashlight = GetWorld()->SpawnActor<AFlashlight>(AFlashlight::StaticClass());
+	flashlight->AttachToComponent(EyeView, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	//flashlight->SetActorRelativeLocation(FVector(0, 0, 0));
 }
 
 void AMainCharacter::Tick(float DeltaTime)
