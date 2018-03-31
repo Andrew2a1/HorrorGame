@@ -22,9 +22,13 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	flashlight = GetWorld()->SpawnActor<AFlashlight>(AFlashlight::StaticClass());
-	flashlight->AttachToComponent(EyeView, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	//flashlight->SetActorRelativeLocation(FVector(0, 0, 0));
+	UWorld* const World = GetWorld();
+	if (World)
+	{
+		flashlight = World->SpawnActor<AFlashlight>(FlashlightBlueprint);
+		flashlight->AttachToComponent(EyeView, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		flashlight->SetActorRelativeLocation(FVector(18, 12, -8));
+	}
 }
 
 void AMainCharacter::Tick(float DeltaTime)

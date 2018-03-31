@@ -17,8 +17,9 @@ class HORRORGAME_API AMainCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
+	UPROPERTY(EditAnywhere) TSubclassOf<class AFlashlight> FlashlightBlueprint;
 	UPROPERTY(VisibleAnywhere) AFlashlight *flashlight;
+	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
 	UPROPERTY(EditAnywhere) float sprintModificator;
 
 public:	
