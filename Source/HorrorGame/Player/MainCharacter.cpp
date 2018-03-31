@@ -3,7 +3,9 @@
 #include "MainCharacter.h"
 
 AMainCharacter::AMainCharacter() :
-	sprintModificator(1.5f)
+	sprintModificator(1.5f),
+	MaxTraceDistance(250.0f),
+	MaxPlayerRange(250.0f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -52,12 +54,35 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainCharacter::startSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMainCharacter::stopSprint);
 
-	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::startCrouch);
-	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::stopCrouch);
+	/*PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::startCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::stopCrouch);*/
 
 	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &AMainCharacter::toggleFlashlight);
 }
 
+AActor *AMainCharacter::mouseTraceHitResult()
+{
+	FHitResult outHit;
+	FCollisionQueryParams collisionParams;
+
+	FVector forwardVector = EyeView->GetForwardVector();
+	FVector traceStart = EyeView->GetComponentLocation();
+	FVector traceEnd = forwardVector * MaxTraceDistance + traceStart;
+
+	bool isHit = GetWorld()->LineTraceSingleByChannel(outHit, traceStart, traceEnd, ECC_WorldStatic, collisionParams);
+
+	if (isHit && outHit.bBlockingHit && (outHit.GetActor() != this))
+	{
+		return outHit.GetActor();
+	}
+
+	return nullptr;
+}
+
+bool AMainCharacter::isActorInPlayerRange(AActor *target)
+{
+	return MaxPlayerRange >= FVector::Distance(target->GetActorLocation(), GetActorLocation());
+}
 
 void AMainCharacter::moveForward(float value)
 {
@@ -93,7 +118,7 @@ void AMainCharacter::stopSprint()
 	GetCharacterMovement()->MaxWalkSpeed = BASIC_CHARACTER_SPEED;
 }
 
-void AMainCharacter::startCrouch()
+/*void AMainCharacter::startCrouch()
 {
 	if (CanCrouch())
 		Crouch();
@@ -102,7 +127,7 @@ void AMainCharacter::startCrouch()
 void AMainCharacter::stopCrouch()
 {
 	UnCrouch();
-}
+}*/
 
 void AMainCharacter::toggleFlashlight()
 {

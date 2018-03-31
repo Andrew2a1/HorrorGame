@@ -19,8 +19,12 @@ class HORRORGAME_API AMainCharacter : public ACharacter
 public:
 	UPROPERTY(EditAnywhere) TSubclassOf<class AFlashlight> FlashlightBlueprint;
 	UPROPERTY(VisibleAnywhere) AFlashlight *flashlight;
+
 	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
 	UPROPERTY(EditAnywhere) float sprintModificator;
+
+	UPROPERTY(EditAnywhere) float MaxTraceDistance;
+	UPROPERTY(EditAnywhere) float MaxPlayerRange;
 
 public:	
 	AMainCharacter();
@@ -32,6 +36,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	AActor *mouseTraceHitResult();
+	bool isActorInPlayerRange(AActor *target);
+
 	UFUNCTION() void moveForward(float Value);
 	UFUNCTION() void moveRight(float Value);
 
@@ -41,8 +48,8 @@ private:
 	UFUNCTION() void startSprint();
 	UFUNCTION() void stopSprint();
 
-	UFUNCTION() void startCrouch();
-	UFUNCTION() void stopCrouch();
+	/*UFUNCTION() void startCrouch();
+	UFUNCTION() void stopCrouch();*/
 
 	UFUNCTION() void toggleFlashlight();
 };
