@@ -4,8 +4,8 @@
 
 AMainCharacter::AMainCharacter() :
 	sprintModificator(1.5f),
-	MaxTraceDistance(250.0f),
-	MaxPlayerRange(250.0f)
+	MaxPlayerRange(250.0f),
+	prevPointerTarget(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -36,6 +36,20 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AInteractiveItem *item = Cast<AInteractiveItem>(mouseTraceHitResult());
+
+	if (prevPointerTarget && prevPointerTarget != item)
+	{
+		prevPointerTarget->OnEndPointingAt();
+	}
+
+	if (item && item != prevPointerTarget)
+	{
+		item->OnStartPointingAt();
+	}
+
+	prevPointerTarget = item;
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -57,6 +71,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	/*PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::startCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::stopCrouch);*/
 
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::interact);
 	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &AMainCharacter::toggleFlashlight);
 }
 
@@ -67,7 +82,7 @@ AActor *AMainCharacter::mouseTraceHitResult()
 
 	FVector forwardVector = EyeView->GetForwardVector();
 	FVector traceStart = EyeView->GetComponentLocation();
-	FVector traceEnd = forwardVector * MaxTraceDistance + traceStart;
+	FVector traceEnd = forwardVector * MaxPlayerRange + traceStart;
 
 	bool isHit = GetWorld()->LineTraceSingleByChannel(outHit, traceStart, traceEnd, ECC_WorldStatic, collisionParams);
 
@@ -128,6 +143,14 @@ void AMainCharacter::stopCrouch()
 {
 	UnCrouch();
 }*/
+
+void AMainCharacter::interact()
+{
+	if (prevPointerTarget)
+	{
+		prevPointerTarget->interact(this);
+	}
+}
 
 void AMainCharacter::toggleFlashlight()
 {

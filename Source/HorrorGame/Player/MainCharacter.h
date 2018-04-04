@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "Engine.h"
+#include "EngineMinimal.h"
 #include "Flashlight.h"
+#include "../Objects/InteractiveItem.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -22,9 +23,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
 	UPROPERTY(EditAnywhere) float sprintModificator;
-
-	UPROPERTY(EditAnywhere) float MaxTraceDistance;
 	UPROPERTY(EditAnywhere) float MaxPlayerRange;
+
+private:
+	AInteractiveItem *prevPointerTarget;
 
 public:	
 	AMainCharacter();
@@ -51,5 +53,6 @@ private:
 	/*UFUNCTION() void startCrouch();
 	UFUNCTION() void stopCrouch();*/
 
+	UFUNCTION() void interact();
 	UFUNCTION() void toggleFlashlight();
 };
