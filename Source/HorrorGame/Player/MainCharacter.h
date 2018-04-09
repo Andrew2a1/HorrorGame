@@ -4,7 +4,9 @@
 
 #include "EngineMinimal.h"
 #include "Flashlight.h"
+
 #include "../Objects/InteractiveItem.h"
+#include "../Objects/ItemDescriptor.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -27,12 +29,16 @@ public:
 
 private:
 	AInteractiveItem *prevPointerTarget;
+	TArray<FItemDescriptor> collectedItems;
 
 public:	
 	AMainCharacter();
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void addToEquipment(const FItemDescriptor &item);
+	bool isItemInEquipment(const FName &itemName);
 
 protected:
 	virtual void BeginPlay() override;
@@ -55,4 +61,6 @@ private:
 
 	UFUNCTION() void interact();
 	UFUNCTION() void toggleFlashlight();
+
+	UFUNCTION() void printDebug();
 };

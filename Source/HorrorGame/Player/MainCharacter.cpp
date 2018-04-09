@@ -39,13 +39,11 @@ void AMainCharacter::Tick(float DeltaTime)
 
 	AInteractiveItem *item = Cast<AInteractiveItem>(mouseTraceHitResult());
 
-	if (prevPointerTarget && prevPointerTarget != item)
-	{
+	if (prevPointerTarget && prevPointerTarget != item) {
 		prevPointerTarget->OnEndPointingAt();
 	}
 
-	if (item && item != prevPointerTarget)
-	{
+	if (item && item != prevPointerTarget) {
 		item->OnStartPointingAt();
 	}
 
@@ -73,6 +71,24 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::interact);
 	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &AMainCharacter::toggleFlashlight);
+
+	PlayerInputComponent->BindAction("PrintDebug", IE_Pressed, this, &AMainCharacter::printDebug);
+}
+
+void AMainCharacter::addToEquipment(const FItemDescriptor &item)
+{
+	collectedItems.Add(item);
+}
+
+bool AMainCharacter::isItemInEquipment(const FName &itemName)
+{
+	for (auto &item : collectedItems)
+	{
+		if (itemName == item.ID)
+			return true;
+	}
+
+	return false;
 }
 
 AActor *AMainCharacter::mouseTraceHitResult()
@@ -157,3 +173,16 @@ void AMainCharacter::toggleFlashlight()
 	if (flashlight)
 		flashlight->toggleLight();
 }
+
+void AMainCharacter::printDebug()
+{
+	if (GEngine)
+	{
+		for (auto& desc : collectedItems)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, desc.ID.ToString());
+		}
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("EQUIPMENT: "));
+	}
+}
+		
