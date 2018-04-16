@@ -21,13 +21,14 @@ class HORRORGAME_API AMainCharacter : public ACharacter
 
 public:
 	UPROPERTY(EditAnywhere) TSubclassOf<class AFlashlight> FlashlightBlueprint;
-	UPROPERTY(VisibleAnywhere) AFlashlight *flashlight;
+	UPROPERTY(EditAnywhere) USceneComponent *FlashlightSpawnLocation;
 
 	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
 	UPROPERTY(EditAnywhere) float sprintModificator;
 	UPROPERTY(EditAnywhere) float MaxPlayerRange;
 
 private:
+	AFlashlight *flashlight;
 	AInteractiveItem *prevPointerTarget;
 	TArray<FItemDescriptor> collectedItems;
 
@@ -38,7 +39,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void addToEquipment(const FItemDescriptor &item);
-	bool isItemInEquipment(const FName &itemName);
+	bool hasItemInEquipment(const FName &itemName);
 
 protected:
 	virtual void BeginPlay() override;
@@ -56,8 +57,8 @@ private:
 	UFUNCTION() void startSprint();
 	UFUNCTION() void stopSprint();
 
-	/*UFUNCTION() void startCrouch();
-	UFUNCTION() void stopCrouch();*/
+	UFUNCTION() void startCrouch();
+	UFUNCTION() void stopCrouch();
 
 	UFUNCTION() void interact();
 	UFUNCTION() void toggleFlashlight();

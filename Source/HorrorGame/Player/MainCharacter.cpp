@@ -14,7 +14,8 @@ AMainCharacter::AMainCharacter() :
 	EyeView->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 	EyeView->bUsePawnControlRotation = true;
 
-	flashlight = CreateDefaultSubobject<AFlashlight>(TEXT("Flashlight"));
+	FlashlightSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("FlashlightLocation"));
+	FlashlightSpawnLocation->SetupAttachment(EyeView);
 
 	GetMesh()->SetOwnerNoSee(true);
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -28,8 +29,8 @@ void AMainCharacter::BeginPlay()
 	if (World)
 	{
 		flashlight = World->SpawnActor<AFlashlight>(FlashlightBlueprint);
-		flashlight->AttachToComponent(EyeView, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-		flashlight->SetActorRelativeLocation(FVector(18, 12, -8));
+		flashlight->SetActorLocation(FlashlightSpawnLocation->GetComponentLocation());
+		flashlight->AttachToComponent(FlashlightSpawnLocation, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	}
 }
 
@@ -66,8 +67,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMainCharacter::startSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMainCharacter::stopSprint);
 
-	/*PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::startCrouch);
-	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::stopCrouch);*/
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMainCharacter::startCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMainCharacter::stopCrouch);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMainCharacter::interact);
 	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &AMainCharacter::toggleFlashlight);
@@ -80,7 +81,7 @@ void AMainCharacter::addToEquipment(const FItemDescriptor &item)
 	collectedItems.Add(item);
 }
 
-bool AMainCharacter::isItemInEquipment(const FName &itemName)
+bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 {
 	for (auto &item : collectedItems)
 	{
@@ -117,14 +118,12 @@ bool AMainCharacter::isActorInPlayerRange(AActor *target)
 
 void AMainCharacter::moveForward(float value)
 {
-	FVector direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-
-	AddMovementInput(direction, value);
+	AddMovementInput(GetActorForwardVector(), value);
 }
 
 void AMainCharacter::moveRight(float value)
 {
-	FVector direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
+	FVector direction = GetActorForwardVector().RotateAngleAxis(90, FVector(0, 0, 1));
 
 	AddMovementInput(direction, value);
 }
@@ -149,7 +148,7 @@ void AMainCharacter::stopSprint()
 	GetCharacterMovement()->MaxWalkSpeed = BASIC_CHARACTER_SPEED;
 }
 
-/*void AMainCharacter::startCrouch()
+void AMainCharacter::startCrouch()
 {
 	if (CanCrouch())
 		Crouch();
@@ -158,7 +157,7 @@ void AMainCharacter::stopSprint()
 void AMainCharacter::stopCrouch()
 {
 	UnCrouch();
-}*/
+}
 
 void AMainCharacter::interact()
 {
