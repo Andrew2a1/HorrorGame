@@ -1,4 +1,4 @@
-// Copyright 2018 Adam Brz¹ka³a
+// Copyright 2018 Adam BrzÄ…kaÅ‚a
 
 #pragma once
 
