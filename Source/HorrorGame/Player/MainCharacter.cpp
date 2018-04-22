@@ -14,7 +14,7 @@ AMainCharacter::AMainCharacter() :
 	EyeView->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f + BaseEyeHeight));
 	EyeView->bUsePawnControlRotation = true;
 
-	FlashlightSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("FlashlightLocation"));
+	FlashlightSpawnLocation = CreateAbstractDefaultSubobject<USceneComponent>(TEXT("FlashlightLocation"));
 	FlashlightSpawnLocation->SetupAttachment(EyeView);
 
 	GetMesh()->SetOwnerNoSee(true);
@@ -29,7 +29,6 @@ void AMainCharacter::BeginPlay()
 	if (World)
 	{
 		flashlight = World->SpawnActor<AFlashlight>(FlashlightBlueprint);
-		flashlight->SetActorLocation(FlashlightSpawnLocation->GetComponentLocation());
 		flashlight->AttachToComponent(FlashlightSpawnLocation, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	}
 }
@@ -40,13 +39,11 @@ void AMainCharacter::Tick(float DeltaTime)
 
 	AInteractiveItem *item = Cast<AInteractiveItem>(mouseTraceHitResult());
 
-	if (prevPointerTarget && prevPointerTarget != item) {
+	if (prevPointerTarget && prevPointerTarget != item)
 		prevPointerTarget->OnEndPointingAt();
-	}
 
-	if (item && item != prevPointerTarget) {
+	if (item && item != prevPointerTarget)
 		item->OnStartPointingAt();
-	}
 
 	prevPointerTarget = item;
 }
@@ -104,9 +101,7 @@ AActor *AMainCharacter::mouseTraceHitResult()
 	bool isHit = GetWorld()->LineTraceSingleByChannel(outHit, traceStart, traceEnd, ECC_WorldStatic, collisionParams);
 
 	if (isHit && outHit.bBlockingHit && (outHit.GetActor() != this))
-	{
 		return outHit.GetActor();
-	}
 
 	return nullptr;
 }
@@ -124,7 +119,6 @@ void AMainCharacter::moveForward(float value)
 void AMainCharacter::moveRight(float value)
 {
 	FVector direction = GetActorForwardVector().RotateAngleAxis(90, FVector(0, 0, 1));
-
 	AddMovementInput(direction, value);
 }
 
@@ -162,9 +156,7 @@ void AMainCharacter::stopCrouch()
 void AMainCharacter::interact()
 {
 	if (prevPointerTarget)
-	{
 		prevPointerTarget->interact(this);
-	}
 }
 
 void AMainCharacter::toggleFlashlight()

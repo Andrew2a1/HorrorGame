@@ -3,8 +3,8 @@
 #pragma once
 
 #include "EngineMinimal.h"
-#include "InteractiveItem.h"
-#include "../Player/MainCharacter.h"
+
+#include "LockableItem.h"
 #include "ItemDescriptor.h"
 
 #include "CoreMinimal.h"
@@ -18,23 +18,22 @@ enum class DoorOpenDirection
 };
 
 UCLASS()
-class HORRORGAME_API ADoor : public AInteractiveItem
+class HORRORGAME_API ADoor : public ALockableItem
 {
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(VisibleAnywhere) UAudioComponent *audioComponent;
-	UPROPERTY(EditAnywhere) USoundCue *openDoorSound;
-	UPROPERTY(EditAnywhere) USoundCue *closedDoorSound;
-	UPROPERTY(EditAnywhere) USoundCue *closeDoorSound;
+	UPROPERTY(EditAnywhere, Category = "Door") USoundCue *openDoorSound;
+	UPROPERTY(EditAnywhere, Category = "Door") USoundCue *closeDoorSound;
+	UPROPERTY(EditAnywhere, Category = "Door") USoundCue *lockedDoorSound;
 
-	UPROPERTY(EditAnywhere) TArray<FName> requiredItems;
-
-	UPROPERTY(EditAnywhere) float openTime;
-	UPROPERTY(EditAnywhere) float openDoorAngle;
+	UPROPERTY(EditAnywhere, Category = "Door") float openTime;
+	UPROPERTY(EditAnywhere, Category = "Door") float openDoorAngle;
 	
 private:
+	UAudioComponent * audioComponent;
 	DoorOpenDirection direction;
+
 	float rotationAtStart;
 	bool opened;
 
@@ -47,14 +46,14 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void interactFunction(AActor *other) override;
+
+	virtual void actionItemUnlocked(AActor *other) override;
+	virtual void failedUnlock(AActor *other) override;
+	virtual void succeededUnlock(AActor *other) override;
 
 private:
-	bool checkPlayerHasRequiredItems(AMainCharacter *player);
-	void playSoundIfValid(USoundCue *soundCue);
-
 	void openRightDirection(AActor *other);
-	void showCannotOpen();
+	void playSoundIfValid(USoundCue *soundCue);
 
 	float wrapAngle(float angle);
 	float getAngleBetweenVectors(const FVector &arg1, const FVector &arg2);

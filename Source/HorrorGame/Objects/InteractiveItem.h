@@ -15,9 +15,9 @@ class HORRORGAME_API AInteractiveItem : public AActor
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere) USceneComponent *itemRoot;
-	UPROPERTY(EditAnywhere) UStaticMeshComponent *itemMesh;
-	UPROPERTY(EditAnywhere) UWidgetComponent *tooltipWidget;
+	UPROPERTY(EditAnywhere, Category = "Interactive") USceneComponent *itemRoot;
+	UPROPERTY(EditAnywhere, Category = "Interactive") UStaticMeshComponent *itemMesh;
+	UPROPERTY(EditAnywhere, Category = "Interactive") UWidgetComponent *tooltipWidget;
 
 	UPROPERTY(EditAnywhere, Category = "Interactive") bool bCanInteract;
 	UPROPERTY(EditAnywhere, Category = "Interactive") bool bShowTooltip;

@@ -53,35 +53,30 @@ void ADoor::CloseDoor()
 	opened = false;
 }
 
-void ADoor::interactFunction(AActor *other)
+void ADoor::actionItemUnlocked(AActor *other)
 {
 	AMainCharacter *player = Cast<AMainCharacter>(other);
 
-	if (!checkPlayerHasRequiredItems(player))
-		showCannotOpen();
-	else if (opened)
+	if (opened)
 		CloseDoor();
 	else
 		openRightDirection(other);
 }
 
-bool ADoor::checkPlayerHasRequiredItems(AMainCharacter *player)
+void ADoor::failedUnlock(AActor *other)
 {
-	if (player)
-		for (auto& itemName : requiredItems)
-			if (!player->hasItemInEquipment(itemName))
-				return false;
+	playSoundIfValid(lockedDoorSound);
 
-	return static_cast<bool>(player);
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have needed items"));
 }
 
-void ADoor::playSoundIfValid(USoundCue *soundCue)
+void ADoor::succeededUnlock(AActor *other)
 {
-	if (soundCue && soundCue->IsValidLowLevelFast())
-	{
-		audioComponent->SetSound(soundCue);
-		audioComponent->Play();
-	}
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Door unlocked!"));
+
+	actionItemUnlocked(other);
 }
 
 void ADoor::openRightDirection(AActor *other)
@@ -94,12 +89,13 @@ void ADoor::openRightDirection(AActor *other)
 		OpenDoor(DoorOpenDirection::Inside);
 }
 
-void ADoor::showCannotOpen()
+void ADoor::playSoundIfValid(USoundCue *soundCue)
 {
-	playSoundIfValid(closedDoorSound);
-
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have needed items"));
+	if (soundCue && soundCue->IsValidLowLevelFast())
+	{
+		audioComponent->SetSound(soundCue);
+		audioComponent->Play();
+	}
 }
 
 float ADoor::wrapAngle(float angle)
