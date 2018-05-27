@@ -2,6 +2,8 @@
 
 #include "MainCharacter.h"
 
+#include "../Debug/DebugToolbox.h"
+
 AMainCharacter::AMainCharacter() :
 	sprintModificator(1.5f),
 	MaxPlayerRange(250.0f),
@@ -81,10 +83,8 @@ void AMainCharacter::addToEquipment(const FItemDescriptor &item)
 bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 {
 	for (auto &item : collectedItems)
-	{
 		if (itemName == item.ID)
 			return true;
-	}
 
 	return false;
 }
@@ -171,9 +171,9 @@ void AMainCharacter::printDebug()
 	{
 		for (auto& desc : collectedItems)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, desc.ID.ToString());
+			PRINT(desc.ID.ToString());
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("EQUIPMENT: "));
+		PRINT(TEXT("EQUIPMENT: "));
 	}
 }
 		
