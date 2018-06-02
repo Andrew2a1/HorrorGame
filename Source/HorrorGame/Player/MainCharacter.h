@@ -4,7 +4,6 @@
 
 #include "EngineMinimal.h"
 #include "Flashlight.h"
-#include "GameOptions.h"
 
 #include "../Objects/InteractiveItem.h"
 #include "../Objects/ItemDescriptor.h"
@@ -27,8 +26,6 @@ public:
 	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
 	UPROPERTY(EditAnywhere) float sprintModificator;
 	UPROPERTY(EditAnywhere) float MaxPlayerRange;
-
-	UPROPERTY(EditAnywhere) FGameOptions GameOptions;
 
 private:
 	AFlashlight *flashlight;
