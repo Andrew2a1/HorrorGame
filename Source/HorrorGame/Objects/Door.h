@@ -31,11 +31,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Door") float openDoorAngle;
 	
 private:
-	UAudioComponent * audioComponent;
+	UAudioComponent *audioComponent;
 	DoorOpenDirection direction;
 
 	float rotationAtStart;
 	bool opened;
+	bool requestMovement;
 
 public:
 	ADoor();

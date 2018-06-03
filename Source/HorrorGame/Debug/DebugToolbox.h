@@ -17,3 +17,12 @@ inline void PRINT(const FString &msg, float time = 3.0f)
 #endif
 }
 
+inline void PRINT(const float &number, float time = 3.0f)
+{
+#ifdef UE_BUILD_DEVELOPMENT
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, time, FColor::Red, FString::SanitizeFloat(number));
+	}
+#endif
+}

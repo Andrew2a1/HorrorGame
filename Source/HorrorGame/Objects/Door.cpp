@@ -1,9 +1,11 @@
 // Copyright 2018 Adam Brząkała
 
 #include "Door.h"
+#include "Debug/DebugToolbox.h"
 
 ADoor::ADoor() :
-	opened(false)
+	opened(false),
+	requestMovement(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -14,43 +16,62 @@ ADoor::ADoor() :
 void ADoor::BeginPlay()
 {
 	Super::BeginPlay();
-	rotationAtStart = GetActorRotation().Yaw;
+	rotationAtStart = wrapAngle(GetActorRotation().Yaw);
 }
 
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
 
-	constexpr float MAX_ANGLE_DELTA = 1.5f;
+	constexpr float MAX_ANGLE_DELTA = 3.0f;
+
+	if (!requestMovement)
+		return;
 
 	float targetAngle;
 	float currentRotation = wrapAngle(GetActorRotation().Yaw);
 	float openSpeed = openDoorAngle / openTime;
 
-	if (direction == DoorOpenDirection::Inside) {
+	if (direction == DoorOpenDirection::Inside)
+	{
 		openSpeed = -openSpeed;
 		targetAngle = wrapAngle(rotationAtStart - openDoorAngle);
-	} else {
+	}
+	else
+	{
 		targetAngle = wrapAngle(rotationAtStart + openDoorAngle);
 	}
 	
 	if (opened && !FMath::IsNearlyEqual(currentRotation, targetAngle, MAX_ANGLE_DELTA))
+	{
 		AddActorLocalRotation(FRotator(0, openSpeed * DeltaTime, 0));
+	}
 	else if (!opened && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MAX_ANGLE_DELTA))
+	{
 		AddActorLocalRotation(FRotator(0, -openSpeed * DeltaTime, 0));
+	}	
+	else
+	{
+		requestMovement = false;
+		if (opened == false)
+			playSoundIfValid(closeDoorSound);
+	}
+		
 }
 
 void ADoor::OpenDoor(DoorOpenDirection openDirection)
 {
 	playSoundIfValid(openDoorSound);
+
 	direction = openDirection;
 	opened = true;
+	requestMovement = true;
 }
 
 void ADoor::CloseDoor()
 {
-	playSoundIfValid(closeDoorSound);
 	opened = false;
+	requestMovement = true;
 }
 
 void ADoor::actionItemUnlocked(AActor *other)
@@ -66,16 +87,12 @@ void ADoor::actionItemUnlocked(AActor *other)
 void ADoor::failedUnlock(AActor *other)
 {
 	playSoundIfValid(lockedDoorSound);
-
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("You don't have needed items"));
+	PRINT(TEXT("You don't have needed items"));
 }
 
 void ADoor::succeededUnlock(AActor *other)
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Door unlocked!"));
-
+	PRINT(TEXT("Door unlocked!"));
 	actionItemUnlocked(other);
 }
 
