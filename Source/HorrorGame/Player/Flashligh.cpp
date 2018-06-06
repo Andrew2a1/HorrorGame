@@ -35,8 +35,12 @@ void AFlashlight::Tick(float DeltaTime)
 void AFlashlight::toggleLight()
 {
 	turnedOn = !turnedOn;
+	setTurnedOn(turnedOn);
+}
 
-	if (turnedOn)
+void AFlashlight::setTurnedOn(bool isTurnedOn)
+{
+	if (isTurnedOn)
 		light->SetIntensity(lightPower);
 	else
 		light->SetIntensity(0.0f);

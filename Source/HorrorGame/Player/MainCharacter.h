@@ -7,6 +7,7 @@
 
 #include "../Objects/InteractiveItem.h"
 #include "../Objects/ItemDescriptor.h"
+#include "../Gameplay/BasicSaveGame.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -40,6 +41,9 @@ public:
 
 	void addToEquipment(const FItemDescriptor &item);
 	bool hasItemInEquipment(const FName &itemName);
+
+	FPlayerInformation GetPlayerState() const;
+	void LoadPlayerState(const FPlayerInformation &MainCharacterInfo);
 
 protected:
 	virtual void BeginPlay() override;

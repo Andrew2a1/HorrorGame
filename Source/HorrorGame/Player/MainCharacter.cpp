@@ -89,6 +89,35 @@ bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 	return false;
 }
 
+FPlayerInformation AMainCharacter::GetPlayerState() const
+{
+	FPlayerInformation state;
+
+	state.collectedItems = collectedItems;
+	state.isFlashlightTurnedOn = flashlight->isTurnedOn();
+
+	state.PlayerLocation = GetActorLocation();
+	state.PlayerRotation = GetActorRotation();
+
+	return state;
+}
+
+void AMainCharacter::LoadPlayerState(const FPlayerInformation &MainCharacterInfo)
+{
+	SetActorLocationAndRotation(MainCharacterInfo.PlayerLocation,
+		MainCharacterInfo.PlayerRotation,
+		false,
+		nullptr,
+		ETeleportType::TeleportPhysics);
+
+	if (flashlight)
+	{
+		flashlight->setTurnedOn(MainCharacterInfo.isFlashlightTurnedOn);
+	}
+
+	collectedItems = MainCharacterInfo.collectedItems;
+}
+
 AActor *AMainCharacter::mouseTraceHitResult()
 {
 	FHitResult outHit;

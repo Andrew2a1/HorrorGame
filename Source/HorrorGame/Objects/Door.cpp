@@ -74,6 +74,25 @@ void ADoor::CloseDoor()
 	requestMovement = true;
 }
 
+FDoorInformation ADoor::GetDoorState() const
+{
+	FDoorInformation info;
+
+	info.DoorName = GetName();
+	info.DoorRotation = GetActorRotation();
+	info.Open = opened;
+	info.RequestMovement = requestMovement;
+
+	return info;
+}
+
+void ADoor::LoadDoorState(const FDoorInformation &DoorState)
+{
+	SetActorRotation(DoorState.DoorRotation, ETeleportType::TeleportPhysics);
+	opened = DoorState.Open;
+	requestMovement = DoorState.RequestMovement;
+}
+
 void ADoor::actionItemUnlocked(AActor *other)
 {
 	AMainCharacter *player = Cast<AMainCharacter>(other);

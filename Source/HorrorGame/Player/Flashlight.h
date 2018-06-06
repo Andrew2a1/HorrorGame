@@ -29,8 +29,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void toggleLight();
+	void setTurnedOn(bool isTurnedOn);
+
+	bool isTurnedOn() const {
+		return turnedOn;
+	}
 
 protected:
 	virtual void BeginPlay() override;
-
 };

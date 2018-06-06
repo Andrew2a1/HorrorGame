@@ -6,16 +6,13 @@
 
 #include "LockableItem.h"
 #include "ItemDescriptor.h"
+#include "DoorSettings.h"
+#include "../Gameplay/BasicSaveGame.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Door.generated.h"
 
-enum class DoorOpenDirection
-{
-	Inside,
-	Outside
-};
+#include "Door.generated.h"
 
 UCLASS()
 class HORRORGAME_API ADoor : public ALockableItem
@@ -44,7 +41,10 @@ public:
 
 	void OpenDoor(DoorOpenDirection openDirection);
 	void CloseDoor();
-	
+
+	FDoorInformation GetDoorState() const;
+	void LoadDoorState(const FDoorInformation &DoorState);
+
 protected:
 	virtual void BeginPlay() override;
 
