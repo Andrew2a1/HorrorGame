@@ -5,7 +5,7 @@
 
 ADoor::ADoor() :
 	opened(false),
-	requestMovement(false)
+	movementRequested(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,47 +16,69 @@ ADoor::ADoor() :
 void ADoor::BeginPlay()
 {
 	Super::BeginPlay();
-	rotationAtStart = wrapAngle(GetActorRotation().Yaw);
+	rotationAtStart = normalizeAngle(GetActorRotation().Yaw);
 }
 
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
 
-	constexpr float MAX_ANGLE_DELTA = 3.0f;
+	if (movementRequested)
+		performDoorOpen(DeltaTime);
+}
 
-	if (!requestMovement)
-		return;
+void ADoor::performDoorOpen(float DeltaTime)
+{
+	float targetAngle = getTargetRotation();
+	float currentRotation = normalizeAngle(GetActorRotation().Yaw);
+	float openSpeed = getOpenSpeed();
 
-	float targetAngle;
-	float currentRotation = wrapAngle(GetActorRotation().Yaw);
+	if (needRotationToOpen(currentRotation, targetAngle))
+		rotate(openSpeed * DeltaTime);
+	else if (needRotationToClose(currentRotation))
+		rotate(-openSpeed * DeltaTime);
+	else
+		endDoorMovement();
+}
+
+float ADoor::getTargetRotation() const
+{
+	if (direction == DoorOpenDirection::Inside)
+		return normalizeAngle(rotationAtStart - openDoorAngle);
+	return normalizeAngle(rotationAtStart + openDoorAngle);
+}
+
+float ADoor::getOpenSpeed() const
+{
 	float openSpeed = openDoorAngle / openTime;
 
 	if (direction == DoorOpenDirection::Inside)
-	{
 		openSpeed = -openSpeed;
-		targetAngle = wrapAngle(rotationAtStart - openDoorAngle);
-	}
-	else
-	{
-		targetAngle = wrapAngle(rotationAtStart + openDoorAngle);
-	}
-	
-	if (opened && !FMath::IsNearlyEqual(currentRotation, targetAngle, MAX_ANGLE_DELTA))
-	{
-		AddActorLocalRotation(FRotator(0, openSpeed * DeltaTime, 0));
-	}
-	else if (!opened && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MAX_ANGLE_DELTA))
-	{
-		AddActorLocalRotation(FRotator(0, -openSpeed * DeltaTime, 0));
-	}	
-	else
-	{
-		requestMovement = false;
-		if (opened == false)
-			playSoundIfValid(closeDoorSound);
-	}
-		
+
+	return openSpeed;
+}
+
+inline bool ADoor::needRotationToOpen(float currentRotation, float targetRotation) const
+{
+	return opened && !FMath::IsNearlyEqual(currentRotation, targetRotation, MaxDoorRotationDelta);
+}
+
+inline bool ADoor::needRotationToClose(float currentRotation) const
+{
+	return !opened && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MaxDoorRotationDelta);
+}
+
+void ADoor::rotate(float angle)
+{
+	AddActorLocalRotation(FRotator(0, angle, 0));
+}
+
+void ADoor::endDoorMovement()
+{
+	movementRequested = false;
+
+	if (opened == false)
+		playSoundIfValid(closeDoorSound);
 }
 
 void ADoor::OpenDoor(DoorOpenDirection openDirection)
@@ -65,13 +87,13 @@ void ADoor::OpenDoor(DoorOpenDirection openDirection)
 
 	direction = openDirection;
 	opened = true;
-	requestMovement = true;
+	movementRequested = true;
 }
 
 void ADoor::CloseDoor()
 {
 	opened = false;
-	requestMovement = true;
+	movementRequested = true;
 }
 
 FDoorInformation ADoor::GetDoorState() const
@@ -81,7 +103,7 @@ FDoorInformation ADoor::GetDoorState() const
 	info.DoorName = GetName();
 	info.DoorRotation = GetActorRotation();
 	info.Open = opened;
-	info.RequestMovement = requestMovement;
+	info.RequestMovement = movementRequested;
 
 	return info;
 }
@@ -90,13 +112,11 @@ void ADoor::LoadDoorState(const FDoorInformation &DoorState)
 {
 	SetActorRotation(DoorState.DoorRotation, ETeleportType::TeleportPhysics);
 	opened = DoorState.Open;
-	requestMovement = DoorState.RequestMovement;
+	movementRequested = DoorState.RequestMovement;
 }
 
 void ADoor::actionItemUnlocked(AActor *other)
 {
-	AMainCharacter *player = Cast<AMainCharacter>(other);
-
 	if (opened)
 		CloseDoor();
 	else
@@ -134,19 +154,19 @@ void ADoor::playSoundIfValid(USoundCue *soundCue)
 	}
 }
 
-float ADoor::wrapAngle(float angle)
+float ADoor::getAngleBetweenVectors(const FVector &arg1, const FVector &arg2) const
+{
+	const float radians = acosf(FVector::DotProduct(arg1, arg2));
+	return FMath::RadiansToDegrees(radians);
+}
+
+float ADoor::normalizeAngle(float angle) const
 {
 	int fullCircles = angle / 360;
 	angle -= fullCircles * 360;
-	
+
 	if (angle < 0)
 		angle += 360;
 
 	return angle;
-}
-
-float ADoor::getAngleBetweenVectors(const FVector &arg1, const FVector &arg2)
-{
-	const float radians = acosf(FVector::DotProduct(arg1, arg2));
-	return FMath::RadiansToDegrees(radians);
 }

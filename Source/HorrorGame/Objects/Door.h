@@ -4,10 +4,11 @@
 
 #include "EngineMinimal.h"
 
+#include "DoorSettings.h"
+
 #include "LockableItem.h"
 #include "ItemDescriptor.h"
-#include "DoorSettings.h"
-#include "../Gameplay/BasicSaveGame.h"
+#include "Gameplay/BasicSaveGame.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -33,7 +34,7 @@ private:
 
 	float rotationAtStart;
 	bool opened;
-	bool requestMovement;
+	bool movementRequested;
 
 public:
 	ADoor();
@@ -53,9 +54,20 @@ protected:
 	virtual void succeededUnlock(AActor *other) override;
 
 private:
+	void performDoorOpen(float DeltaTime);
+
+	float getTargetRotation() const;
+	float getOpenSpeed() const;
+	
+	inline bool needRotationToOpen(float currentRotation, float targetRotation) const;
+	inline bool needRotationToClose(float currentRotation) const;
+	
+	void rotate(float angle);
+	void endDoorMovement();
+
 	void openRightDirection(AActor *other);
 	void playSoundIfValid(USoundCue *soundCue);
 
-	float wrapAngle(float angle);
-	float getAngleBetweenVectors(const FVector &arg1, const FVector &arg2);
+	float getAngleBetweenVectors(const FVector &arg1, const FVector &arg2) const;
+	float normalizeAngle(float angle) const;
 };
