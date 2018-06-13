@@ -2,15 +2,11 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
-
 #include "DoorSettings.h"
-
 #include "LockableItem.h"
-#include "ItemDescriptor.h"
-#include "Gameplay/BasicSaveGame.h"
 
 #include "CoreMinimal.h"
+#include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
 
 #include "Door.generated.h"
@@ -33,7 +29,7 @@ private:
 	DoorOpenDirection direction;
 
 	float rotationAtStart;
-	bool opened;
+	bool openRequested;
 	bool movementRequested;
 
 public:
@@ -42,9 +38,6 @@ public:
 
 	void OpenDoor(DoorOpenDirection openDirection);
 	void CloseDoor();
-
-	FDoorInformation GetDoorState() const;
-	void LoadDoorState(const FDoorInformation &DoorState);
 
 protected:
 	virtual void BeginPlay() override;

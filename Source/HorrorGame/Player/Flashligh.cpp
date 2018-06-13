@@ -3,7 +3,7 @@
 #include "Flashlight.h"
 
 AFlashlight::AFlashlight() :
-	lightPower(DEFAULT_LIGHT_INTENSITY),
+	lightPower(DefaultLightIntensity),
 	turnedOn(false)
 {
 	PrimaryActorTick.bCanEverTick = false;

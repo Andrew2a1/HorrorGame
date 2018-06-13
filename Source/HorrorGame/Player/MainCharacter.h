@@ -2,18 +2,18 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
-#include "Flashlight.h"
-
-#include "../Objects/InteractiveItem.h"
-#include "../Objects/ItemDescriptor.h"
-#include "../Gameplay/BasicSaveGame.h"
-
 #include "CoreMinimal.h"
+#include "EngineMinimal.h"
+
 #include "GameFramework/Character.h"
+
+#include "Flashlight.h"
+#include "Objects/InteractiveItem.h"
+#include "Objects/ItemDescriptor.h"
+
 #include "MainCharacter.generated.h"
 
-constexpr float BASIC_CHARACTER_SPEED = 600;
+constexpr float DefaultCharacterSpeed = 600;
 
 UCLASS()
 class HORRORGAME_API AMainCharacter : public ACharacter
@@ -26,7 +26,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere) UCameraComponent *EyeView;
 	UPROPERTY(EditAnywhere) float sprintModificator;
-	UPROPERTY(EditAnywhere) float MaxPlayerRange;
+	UPROPERTY(EditAnywhere) float maxPlayerRange;
 
 private:
 	AFlashlight *flashlight;
@@ -41,9 +41,6 @@ public:
 
 	void addToEquipment(const FItemDescriptor &item);
 	bool hasItemInEquipment(const FName &itemName);
-
-	FPlayerInformation GetPlayerState() const;
-	void LoadPlayerState(const FPlayerInformation &MainCharacterInfo);
 
 protected:
 	virtual void BeginPlay() override;

@@ -4,7 +4,9 @@
 #include "Debug/DebugToolbox.h"
 
 ADoor::ADoor() :
-	opened(false),
+	openTime(DefaultOpenDoorTimeSec),
+	openDoorAngle(DefaultOpenDoorRotation),
+	openRequested(false),
 	movementRequested(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -60,12 +62,12 @@ float ADoor::getOpenSpeed() const
 
 inline bool ADoor::needRotationToOpen(float currentRotation, float targetRotation) const
 {
-	return opened && !FMath::IsNearlyEqual(currentRotation, targetRotation, MaxDoorRotationDelta);
+	return openRequested && !FMath::IsNearlyEqual(currentRotation, targetRotation, MaxDoorRotationDelta);
 }
 
 inline bool ADoor::needRotationToClose(float currentRotation) const
 {
-	return !opened && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MaxDoorRotationDelta);
+	return !openRequested && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MaxDoorRotationDelta);
 }
 
 void ADoor::rotate(float angle)
@@ -77,7 +79,7 @@ void ADoor::endDoorMovement()
 {
 	movementRequested = false;
 
-	if (opened == false)
+	if (!openRequested)
 		playSoundIfValid(closeDoorSound);
 }
 
@@ -86,38 +88,19 @@ void ADoor::OpenDoor(DoorOpenDirection openDirection)
 	playSoundIfValid(openDoorSound);
 
 	direction = openDirection;
-	opened = true;
+	openRequested = true;
 	movementRequested = true;
 }
 
 void ADoor::CloseDoor()
 {
-	opened = false;
+	openRequested = false;
 	movementRequested = true;
-}
-
-FDoorInformation ADoor::GetDoorState() const
-{
-	FDoorInformation info;
-
-	info.DoorName = GetName();
-	info.DoorRotation = GetActorRotation();
-	info.Open = opened;
-	info.RequestMovement = movementRequested;
-
-	return info;
-}
-
-void ADoor::LoadDoorState(const FDoorInformation &DoorState)
-{
-	SetActorRotation(DoorState.DoorRotation, ETeleportType::TeleportPhysics);
-	opened = DoorState.Open;
-	movementRequested = DoorState.RequestMovement;
 }
 
 void ADoor::actionItemUnlocked(AActor *other)
 {
-	if (opened)
+	if (openRequested)
 		CloseDoor();
 	else
 		openRightDirection(other);

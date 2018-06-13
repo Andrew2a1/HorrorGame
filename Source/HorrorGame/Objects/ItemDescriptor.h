@@ -3,12 +3,12 @@
 #include "CoreMinimal.h"
 #include "ItemDescriptor.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FItemDescriptor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere) FName ID;
-	UPROPERTY(EditAnywhere) FText name;
-	UPROPERTY(EditAnywhere) FText description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) FName ID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) FText name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) FText description;
 };

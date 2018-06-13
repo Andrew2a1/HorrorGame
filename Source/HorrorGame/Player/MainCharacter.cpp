@@ -6,7 +6,7 @@
 
 AMainCharacter::AMainCharacter() :
 	sprintModificator(1.5f),
-	MaxPlayerRange(250.0f),
+	maxPlayerRange(250.0f),
 	prevPointerTarget(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -27,7 +27,7 @@ void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UWorld* const World = GetWorld();
+	UWorld *World = GetWorld();
 	if (World)
 	{
 		flashlight = World->SpawnActor<AFlashlight>(FlashlightBlueprint);
@@ -89,35 +89,6 @@ bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 	return false;
 }
 
-FPlayerInformation AMainCharacter::GetPlayerState() const
-{
-	FPlayerInformation state;
-
-	state.collectedItems = collectedItems;
-	state.isFlashlightTurnedOn = flashlight->isTurnedOn();
-
-	state.PlayerLocation = GetActorLocation();
-	state.PlayerRotation = GetActorRotation();
-
-	return state;
-}
-
-void AMainCharacter::LoadPlayerState(const FPlayerInformation &MainCharacterInfo)
-{
-	SetActorLocationAndRotation(MainCharacterInfo.PlayerLocation,
-		MainCharacterInfo.PlayerRotation,
-		false,
-		nullptr,
-		ETeleportType::TeleportPhysics);
-
-	if (flashlight)
-	{
-		flashlight->setTurnedOn(MainCharacterInfo.isFlashlightTurnedOn);
-	}
-
-	collectedItems = MainCharacterInfo.collectedItems;
-}
-
 AActor *AMainCharacter::mouseTraceHitResult()
 {
 	FHitResult outHit;
@@ -125,7 +96,7 @@ AActor *AMainCharacter::mouseTraceHitResult()
 
 	FVector forwardVector = EyeView->GetForwardVector();
 	FVector traceStart = EyeView->GetComponentLocation();
-	FVector traceEnd = forwardVector * MaxPlayerRange + traceStart;
+	FVector traceEnd = forwardVector * maxPlayerRange + traceStart;
 
 	bool isHit = GetWorld()->LineTraceSingleByChannel(outHit, traceStart, traceEnd, ECC_WorldStatic, collisionParams);
 
@@ -137,7 +108,7 @@ AActor *AMainCharacter::mouseTraceHitResult()
 
 bool AMainCharacter::isActorInPlayerRange(AActor *target)
 {
-	return MaxPlayerRange >= FVector::Distance(target->GetActorLocation(), GetActorLocation());
+	return maxPlayerRange >= FVector::Distance(target->GetActorLocation(), GetActorLocation());
 }
 
 void AMainCharacter::moveForward(float value)
@@ -163,12 +134,12 @@ void AMainCharacter::stopJump()
 
 void AMainCharacter::startSprint()
 {
-	GetCharacterMovement()->MaxWalkSpeed = BASIC_CHARACTER_SPEED * sprintModificator;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultCharacterSpeed * sprintModificator;
 }
 
 void AMainCharacter::stopSprint()
 {
-	GetCharacterMovement()->MaxWalkSpeed = BASIC_CHARACTER_SPEED;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultCharacterSpeed;
 }
 
 void AMainCharacter::startCrouch()

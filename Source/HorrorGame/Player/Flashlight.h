@@ -8,7 +8,7 @@
 #include "Components/SceneComponent.h"
 #include "Flashlight.generated.h"
 
-constexpr int DEFAULT_LIGHT_INTENSITY = 5000;
+constexpr int DefaultLightIntensity = 5000;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HORRORGAME_API AFlashlight : public AActor
@@ -19,6 +19,7 @@ public:
 	UPROPERTY(EditAnywhere) USceneComponent *itemRoot;
 	UPROPERTY(EditAnywhere) UStaticMeshComponent *FlashlightMesh;
 	UPROPERTY(EditAnywhere) USpotLightComponent *light;
+
 	UPROPERTY(EditAnywhere) float lightPower;
 
 private:
@@ -31,7 +32,7 @@ public:
 	void toggleLight();
 	void setTurnedOn(bool isTurnedOn);
 
-	bool isTurnedOn() const {
+	inline bool isTurnedOn() const {
 		return turnedOn;
 	}
 
