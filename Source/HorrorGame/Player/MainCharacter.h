@@ -46,26 +46,26 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	AActor *mouseTraceHitResult();
+	AActor *getPointerTarget();
 	bool isActorInPlayerRange(AActor *target);
 
 	inline bool userStartedPointingAtItem(const AInteractiveItem *item) const;
 	inline bool userEndedPointingAtItem(const AInteractiveItem *item) const;
 
-	UFUNCTION() void moveForward(float Value);
-	UFUNCTION() void moveRight(float Value);
+	void moveForward(float Value);
+	void moveRight(float Value);
 
-	UFUNCTION() void startJump();
-	UFUNCTION() void stopJump();
+	void startJump();
+	void stopJump();
 
-	UFUNCTION() void startSprint();
-	UFUNCTION() void stopSprint();
+	void startSprint();
+	void stopSprint();
 
-	UFUNCTION() void startCrouch();
-	UFUNCTION() void stopCrouch();
+	void startCrouch();
+	void stopCrouch();
 
-	UFUNCTION() void interact();
-	UFUNCTION() void toggleFlashlight();
+	void interact();
+	void toggleFlashlight();
 
-	UFUNCTION() void printDebug();
+	void printDebug();
 };
