@@ -7,7 +7,7 @@
 AMainCharacter::AMainCharacter() :
 	sprintModificator(1.5f),
 	maxPlayerRange(250.0f),
-	prevPointerTarget(nullptr)
+	lastPointerTarget(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -39,15 +39,25 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AInteractiveItem *item = Cast<AInteractiveItem>(mouseTraceHitResult());
+	AInteractiveItem *pointerTarget = Cast<AInteractiveItem>(getPointerTarget());
 
-	if (prevPointerTarget && prevPointerTarget != item)
-		prevPointerTarget->OnEndPointingAt();
+	if (userEndedPointingAtItem(pointerTarget))
+		lastPointerTarget->OnEndPointingAt();
 
-	if (item && item != prevPointerTarget)
-		item->OnStartPointingAt();
+	if (userStartedPointingAtItem(pointerTarget))
+		pointerTarget->OnStartPointingAt();
 
-	prevPointerTarget = item;
+	lastPointerTarget = pointerTarget;
+}
+
+bool AMainCharacter::userStartedPointingAtItem(const AInteractiveItem *item) const
+{
+	return item && item != lastPointerTarget;
+}
+
+bool AMainCharacter::userEndedPointingAtItem(const AInteractiveItem *item) const
+{
+	return lastPointerTarget && lastPointerTarget != item;
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -89,7 +99,7 @@ bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 	return false;
 }
 
-AActor *AMainCharacter::mouseTraceHitResult()
+AActor *AMainCharacter::getPointerTarget()
 {
 	FHitResult outHit;
 	FCollisionQueryParams collisionParams;
@@ -155,8 +165,8 @@ void AMainCharacter::stopCrouch()
 
 void AMainCharacter::interact()
 {
-	if (prevPointerTarget)
-		prevPointerTarget->interact(this);
+	if (lastPointerTarget)
+		lastPointerTarget->interact(this);
 }
 
 void AMainCharacter::toggleFlashlight()

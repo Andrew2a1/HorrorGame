@@ -30,7 +30,7 @@ public:
 
 private:
 	AFlashlight *flashlight;
-	AInteractiveItem *prevPointerTarget;
+	AInteractiveItem *lastPointerTarget;
 	TArray<FItemDescriptor> collectedItems;
 
 public:	
@@ -48,6 +48,9 @@ protected:
 private:
 	AActor *mouseTraceHitResult();
 	bool isActorInPlayerRange(AActor *target);
+
+	inline bool userStartedPointingAtItem(const AInteractiveItem *item) const;
+	inline bool userEndedPointingAtItem(const AInteractiveItem *item) const;
 
 	UFUNCTION() void moveForward(float Value);
 	UFUNCTION() void moveRight(float Value);
