@@ -18,7 +18,7 @@ void FFindSavesVisitor::FindSaves()
 	FPlatformFileManager::Get().GetPlatformFile().IterateDirectory(*SavesFolder, *this);
 }
 
-inline TArray<FString> FFindSavesVisitor::GetAllFoundFilePaths() const
+TArray<FString> FFindSavesVisitor::GetAllFoundFilePaths() const
 {
 	return FoundSaveFilePaths;
 }

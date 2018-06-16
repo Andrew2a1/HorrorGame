@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EngineMinimal.h"
+
 #include "Containers/Array.h"
 
 constexpr TCHAR* SavegamesDirectory = TEXT("SaveGames");
@@ -17,7 +18,7 @@ private:
 public:
 	void FindSaves();
 
-	inline TArray<FString> GetAllFoundFilePaths() const;
+	TArray<FString> GetAllFoundFilePaths() const;
 	TArray<FString> GetAllFoundSlotNames() const;
 
 private:
