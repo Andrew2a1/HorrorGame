@@ -1,4 +1,4 @@
-// Copyright 2018 Adam Brząkała
+// Copyright 2018 Adam Brzakala
 
 #include "GameSaveData.h"
 #include "FindSavesVisitor.h"

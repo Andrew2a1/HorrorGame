@@ -1,4 +1,4 @@
-// Copyright 2018 Adam Brząkała
+// Copyright 2018 Adam Brzakala
 
 #include "EnemyCharacter.h"
 #include "EngineMinimal.h"

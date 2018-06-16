@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2018 Adam Brzakala
 
 #include "HorrorGame.h"
 #include "Modules/ModuleManager.h"

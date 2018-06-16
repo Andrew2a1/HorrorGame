@@ -1,4 +1,4 @@
-// Copyright 2018 Adam Brząkała
+// Copyright 2018 Adam Brzakala
 
 #include "Door.h"
 #include "Debug/DebugToolbox.h"

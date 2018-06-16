@@ -1,8 +1,8 @@
-// Copyright 2018 Adam Brząkała
+// Copyright 2018 Adam Brzakala
 
 #include "EnemyAI.h"
 #include "EnemyCharacter.h"
-#include "../Player/MainCharacter.h"
+#include "Player/MainCharacter.h"
 
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"

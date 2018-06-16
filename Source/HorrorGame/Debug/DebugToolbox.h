@@ -1,3 +1,5 @@
+// Copyright 2018 Adam Brzakala
+
 #pragma once
 
 #ifdef UE_BUILD_DEVELOPMENT
