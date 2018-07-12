@@ -100,17 +100,26 @@ bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 	return false;
 }
 
-void AMainCharacter::LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData)
+bool AMainCharacter::LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData)
 {
+	if (GameSaveData == nullptr)
+		return false;
+
 	SetActorLocation(GameSaveData->PlayerPosition,
 		false,
 		nullptr,
 		ETeleportType::TeleportPhysics);
+
+	return true;
 }
 
-void AMainCharacter::SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const
+bool AMainCharacter::SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const
 {
+	if (GameSaveData == nullptr)
+		return false;
+
 	GameSaveData->PlayerPosition = GetActorLocation();
+	return true;
 }
 
 AActor *AMainCharacter::getPointerTarget()

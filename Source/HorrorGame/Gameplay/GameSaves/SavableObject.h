@@ -20,8 +20,8 @@ class HORRORGAME_API ISavableObject
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "SaveGame")
-		void LoadDataFromGameSave(const UGameSaveData *GameSaveData);
+		bool LoadDataFromGameSave(const UGameSaveData *GameSaveData);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "SaveGame")
-		void SaveDataToGameSave(UGameSaveData *GameSaveData) const;
+		bool SaveDataToGameSave(UGameSaveData *GameSaveData) const;
 };

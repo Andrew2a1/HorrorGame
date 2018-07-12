@@ -43,12 +43,12 @@ public:
 	bool hasItemInEquipment(const FName &itemName);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
-		void LoadDataFromGameSave(const UGameSaveData *GameSaveData);
-		virtual void LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
+		bool LoadDataFromGameSave(const UGameSaveData *GameSaveData);
+		virtual bool LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
-		void SaveDataToGameSave(UGameSaveData *GameSaveData) const;
-		virtual void SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
+		bool SaveDataToGameSave(UGameSaveData *GameSaveData) const;
+		virtual bool SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
