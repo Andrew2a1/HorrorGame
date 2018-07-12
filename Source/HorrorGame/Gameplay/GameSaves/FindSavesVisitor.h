@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "EngineMinimal.h"
-
 #include "Containers/Array.h"
 
 constexpr TCHAR* SAVEGAMES_DIRECTORY = TEXT("SaveGames");
 constexpr TCHAR* SAVEGAME_EXTENSION = TEXT("sav");
-
 constexpr TCHAR* QUICK_SAVE_FILENAME = TEXT("QuickSave");
 
 class FFindSavesVisitor : public IPlatformFile::FDirectoryVisitor

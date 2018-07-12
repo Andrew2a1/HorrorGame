@@ -8,7 +8,6 @@ bool FFindSavesVisitor::Visit(const TCHAR* FilenameOrDirectory, bool bIsDirector
 {
 	if (!bIsDirectory && isSavegameFile(FilenameOrDirectory))
 		FoundSaveFilePaths.Add(FilenameOrDirectory);
-
 	return true;
 }
 

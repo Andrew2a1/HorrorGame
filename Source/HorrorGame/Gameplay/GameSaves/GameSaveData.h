@@ -6,8 +6,6 @@
 #include "EngineMinimal.h"
 
 #include "GameFramework/SaveGame.h"
-#include "Kismet/GameplayStatics.h"
-
 #include "GameSaveData.generated.h"
 
 UCLASS(BlueprintType)

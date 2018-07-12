@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "Engine.h"
-
 #include "CoreMinimal.h"
+#include "EngineMinimal.h"
+
 #include "Components/SceneComponent.h"
 #include "Flashlight.generated.h"
 
-constexpr int DefaultLightIntensity = 5000;
+constexpr int DEFAULT_LIGHT_INTENSITY = 5000;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HORRORGAME_API AFlashlight : public AActor
@@ -27,14 +27,12 @@ private:
 
 public:	
 	AFlashlight();
-	virtual void Tick(float DeltaTime) override;
 
 	void toggleLight();
 	void setTurnedOn(bool isTurnedOn);
 
-	inline bool isTurnedOn() const {
-		return turnedOn;
-	}
+	inline bool isTurnedOn() const;
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;

@@ -4,14 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "EngineMinimal.h"
-
 #include "GameFramework/Character.h"
 
 #include "Flashlight.h"
 #include "Objects/InteractiveItem.h"
 #include "Objects/ItemDescriptor.h"
-
-#include "Gameplay/GameSaves/GameSave.h"
 #include "Gameplay/GameSaves/SavableObject.h"
 
 #include "MainCharacter.generated.h"
@@ -60,9 +57,6 @@ private:
 	AActor *getPointerTarget();
 	bool isActorInPlayerRange(AActor *target);
 
-	inline bool userStartedPointingAtItem(const AInteractiveItem *item) const;
-	inline bool userEndedPointingAtItem(const AInteractiveItem *item) const;
-
 	void moveForward(float Value);
 	void moveRight(float Value);
 
@@ -79,4 +73,7 @@ private:
 	void toggleFlashlight();
 
 	void printDebug();
+
+	inline bool userStartedPointingAtItem(const AInteractiveItem *item) const;
+	inline bool userEndedPointingAtItem(const AInteractiveItem *item) const;
 };

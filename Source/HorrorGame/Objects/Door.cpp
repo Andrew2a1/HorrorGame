@@ -4,15 +4,15 @@
 #include "Debug/DebugToolbox.h"
 
 ADoor::ADoor() :
-	openTime(DefaultOpenDoorTimeSec),
-	openDoorAngle(DefaultOpenDoorRotation),
+	openTime(DEFAULT_OPEN_DOOR_TIME),
+	openDoorAngle(DEFAULT_OPEN_DOOR_ROTATION),
 	openRequested(false),
 	movementRequested(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	audioComponent->bAutoActivate = false;
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->bAutoActivate = false;
 }
 
 void ADoor::BeginPlay()
@@ -45,16 +45,27 @@ void ADoor::performDoorOpen(float DeltaTime)
 
 float ADoor::getTargetRotation() const
 {
-	if (direction == DoorOpenDirection::Inside)
+	if (OpenDirection == DoorOpenDirection::Inside)
 		return normalizeAngle(rotationAtStart - openDoorAngle);
 	return normalizeAngle(rotationAtStart + openDoorAngle);
+}
+
+float ADoor::normalizeAngle(float angle) const
+{
+	int fullCircles = angle / 360;
+	angle -= fullCircles * 360;
+
+	if (angle < 0)
+		angle += 360;
+
+	return angle;
 }
 
 float ADoor::getOpenSpeed() const
 {
 	float openSpeed = openDoorAngle / openTime;
 
-	if (direction == DoorOpenDirection::Inside)
+	if (OpenDirection == DoorOpenDirection::Inside)
 		openSpeed = -openSpeed;
 
 	return openSpeed;
@@ -62,12 +73,12 @@ float ADoor::getOpenSpeed() const
 
 inline bool ADoor::needRotationToOpen(float currentRotation, float targetRotation) const
 {
-	return openRequested && !FMath::IsNearlyEqual(currentRotation, targetRotation, MaxDoorRotationDelta);
+	return openRequested && !FMath::IsNearlyEqual(currentRotation, targetRotation, MAX_DOOR_ROTATION_DELTA);
 }
 
 inline bool ADoor::needRotationToClose(float currentRotation) const
 {
-	return !openRequested && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MaxDoorRotationDelta);
+	return !openRequested && !FMath::IsNearlyEqual(currentRotation, rotationAtStart, MAX_DOOR_ROTATION_DELTA);
 }
 
 void ADoor::rotate(float angle)
@@ -87,7 +98,7 @@ void ADoor::OpenDoor(DoorOpenDirection openDirection)
 {
 	playSoundIfValid(openDoorSound);
 
-	direction = openDirection;
+	OpenDirection = openDirection;
 	openRequested = true;
 	movementRequested = true;
 }
@@ -132,8 +143,8 @@ void ADoor::playSoundIfValid(USoundCue *soundCue)
 {
 	if (soundCue && soundCue->IsValidLowLevelFast())
 	{
-		audioComponent->SetSound(soundCue);
-		audioComponent->Play();
+		AudioComponent->SetSound(soundCue);
+		AudioComponent->Play();
 	}
 }
 
@@ -141,15 +152,4 @@ float ADoor::getAngleBetweenVectors(const FVector &arg1, const FVector &arg2) co
 {
 	const float radians = acosf(FVector::DotProduct(arg1, arg2));
 	return FMath::RadiansToDegrees(radians);
-}
-
-float ADoor::normalizeAngle(float angle) const
-{
-	int fullCircles = angle / 360;
-	angle -= fullCircles * 360;
-
-	if (angle < 0)
-		angle += 360;
-
-	return angle;
 }

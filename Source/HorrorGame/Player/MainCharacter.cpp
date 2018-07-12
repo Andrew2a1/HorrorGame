@@ -1,8 +1,6 @@
 // Copyright 2018 Adam Brzakala
 
 #include "MainCharacter.h"
-
-#include "Gameplay/GameSaves/GameSave.h"
 #include "Debug/DebugToolbox.h"
 
 AMainCharacter::AMainCharacter() :
@@ -52,14 +50,30 @@ void AMainCharacter::Tick(float DeltaTime)
 	lastPointerTarget = pointerTarget;
 }
 
-bool AMainCharacter::userStartedPointingAtItem(const AInteractiveItem *item) const
+AActor *AMainCharacter::getPointerTarget()
 {
-	return item && item != lastPointerTarget;
+	FHitResult outHit;
+	FCollisionQueryParams collisionParams;
+
+	FVector forwardVector = EyeView->GetForwardVector();
+	FVector traceStart = EyeView->GetComponentLocation();
+	FVector traceEnd = forwardVector * maxPlayerRange + traceStart;
+
+	bool isHit = GetWorld()->LineTraceSingleByChannel(outHit, traceStart, traceEnd, ECC_WorldStatic, collisionParams);
+
+	if (isHit && outHit.bBlockingHit && (outHit.GetActor() != this))
+		return outHit.GetActor();
+	return nullptr;
 }
 
 bool AMainCharacter::userEndedPointingAtItem(const AInteractiveItem *item) const
 {
 	return lastPointerTarget && lastPointerTarget != item;
+}
+
+bool AMainCharacter::userStartedPointingAtItem(const AInteractiveItem *item) const
+{
+	return item && item != lastPointerTarget;
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -122,28 +136,6 @@ bool AMainCharacter::SaveDataToGameSave_Implementation(UGameSaveData *GameSaveDa
 	return true;
 }
 
-AActor *AMainCharacter::getPointerTarget()
-{
-	FHitResult outHit;
-	FCollisionQueryParams collisionParams;
-
-	FVector forwardVector = EyeView->GetForwardVector();
-	FVector traceStart = EyeView->GetComponentLocation();
-	FVector traceEnd = forwardVector * maxPlayerRange + traceStart;
-
-	bool isHit = GetWorld()->LineTraceSingleByChannel(outHit, traceStart, traceEnd, ECC_WorldStatic, collisionParams);
-
-	if (isHit && outHit.bBlockingHit && (outHit.GetActor() != this))
-		return outHit.GetActor();
-
-	return nullptr;
-}
-
-bool AMainCharacter::isActorInPlayerRange(AActor *target)
-{
-	return maxPlayerRange >= FVector::Distance(target->GetActorLocation(), GetActorLocation());
-}
-
 void AMainCharacter::moveForward(float value)
 {
 	AddMovementInput(GetActorForwardVector(), value);
@@ -196,6 +188,11 @@ void AMainCharacter::toggleFlashlight()
 {
 	if (flashlight)
 		flashlight->toggleLight();
+}
+
+bool AMainCharacter::isActorInPlayerRange(AActor *target)
+{
+	return maxPlayerRange >= FVector::Distance(target->GetActorLocation(), GetActorLocation());
 }
 
 void AMainCharacter::printDebug()

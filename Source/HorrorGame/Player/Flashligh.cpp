@@ -3,7 +3,7 @@
 #include "Flashlight.h"
 
 AFlashlight::AFlashlight() :
-	lightPower(DefaultLightIntensity),
+	lightPower(DEFAULT_LIGHT_INTENSITY),
 	turnedOn(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -44,4 +44,9 @@ void AFlashlight::setTurnedOn(bool isTurnedOn)
 		light->SetIntensity(lightPower);
 	else
 		light->SetIntensity(0.0f);
+}
+
+inline bool AFlashlight::isTurnedOn() const
+{
+	return turnedOn;
 }
