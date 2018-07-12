@@ -2,7 +2,8 @@
 
 #include "MainCharacter.h"
 
-#include "../Debug/DebugToolbox.h"
+#include "Gameplay/GameSaves/GameSave.h"
+#include "Debug/DebugToolbox.h"
 
 AMainCharacter::AMainCharacter() :
 	sprintModificator(1.5f),
@@ -31,7 +32,9 @@ void AMainCharacter::BeginPlay()
 	if (World)
 	{
 		flashlight = World->SpawnActor<AFlashlight>(FlashlightBlueprint);
-		flashlight->AttachToComponent(FlashlightSpawnLocation, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		
+		if(flashlight)
+			flashlight->AttachToComponent(FlashlightSpawnLocation, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	}
 }
 
@@ -95,8 +98,20 @@ bool AMainCharacter::hasItemInEquipment(const FName &itemName)
 	for (auto &item : collectedItems)
 		if (itemName == item.ID)
 			return true;
-
 	return false;
+}
+
+void AMainCharacter::LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData)
+{
+	SetActorLocation(GameSaveData->PlayerPosition,
+		false,
+		nullptr,
+		ETeleportType::TeleportPhysics);
+}
+
+void AMainCharacter::SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const
+{
+	GameSaveData->PlayerPosition = GetActorLocation();
 }
 
 AActor *AMainCharacter::getPointerTarget()
@@ -186,4 +201,3 @@ void AMainCharacter::printDebug()
 		PRINT(TEXT("EQUIPMENT: "));
 	}
 }
-		

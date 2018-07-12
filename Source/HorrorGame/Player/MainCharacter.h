@@ -11,12 +11,15 @@
 #include "Objects/InteractiveItem.h"
 #include "Objects/ItemDescriptor.h"
 
+#include "Gameplay/GameSaves/GameSave.h"
+#include "Gameplay/GameSaves/SavableObject.h"
+
 #include "MainCharacter.generated.h"
 
 constexpr float DefaultCharacterSpeed = 600;
 
 UCLASS()
-class HORRORGAME_API AMainCharacter : public ACharacter
+class HORRORGAME_API AMainCharacter : public ACharacter, public ISavableObject
 {
 	GENERATED_BODY()
 
@@ -35,12 +38,20 @@ private:
 
 public:	
 	AMainCharacter();
+	
+	void addToEquipment(const FItemDescriptor &item);
+	bool hasItemInEquipment(const FName &itemName);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
+		void LoadDataFromGameSave(const UGameSaveData *GameSaveData);
+		virtual void LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
+		void SaveDataToGameSave(UGameSaveData *GameSaveData) const;
+		virtual void SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	void addToEquipment(const FItemDescriptor &item);
-	bool hasItemInEquipment(const FName &itemName);
 
 protected:
 	virtual void BeginPlay() override;
