@@ -29,12 +29,11 @@ void AMainCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	UWorld *World = GetWorld();
-	if (World)
+
+	if (World && FlashlightBlueprint.Get())
 	{
 		flashlight = World->SpawnActor<AFlashlight>(FlashlightBlueprint);
-		
-		if(flashlight)
-			flashlight->AttachToComponent(FlashlightSpawnLocation, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		flashlight->AttachToComponent(FlashlightSpawnLocation, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	}
 }
 
