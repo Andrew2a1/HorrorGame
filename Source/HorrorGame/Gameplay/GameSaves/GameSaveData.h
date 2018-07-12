@@ -16,16 +16,9 @@ class HORRORGAME_API UGameSaveData : public USaveGame
 	GENERATED_BODY()
 	
 public:
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
-		FPlayerInformation MainCharacterInfo;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
-		TArray<FDoorInformation> DoorInformations;*/
+		FVector PlayerPosition;
 
 public:
-	/*UFUNCTION(BlueprintCallable, Category = "GameSaves")
-		static TArray<FGamesave> getAllGamesaves();*/
-
-	UFUNCTION(BlueprintCallable, Category = "GameSaves")
-		static UGameSaveData *CreateGameSaveDataInstance();
+	static UGameSaveData *CreateGameSaveDataInstance();
 };

@@ -14,7 +14,7 @@ bool FFindSavesVisitor::Visit(const TCHAR* FilenameOrDirectory, bool bIsDirector
 
 void FFindSavesVisitor::FindSaves()
 {
-	const FString SavesFolder = FPaths::Combine(FPaths::ProjectSavedDir(), SavegamesDirectory);
+	const FString SavesFolder = FPaths::Combine(FPaths::ProjectSavedDir(), SAVEGAMES_DIRECTORY);
 	FPlatformFileManager::Get().GetPlatformFile().IterateDirectory(*SavesFolder, *this);
 }
 
@@ -38,5 +38,5 @@ TArray<FString> FFindSavesVisitor::GetAllFoundSlotNames() const
 
 bool FFindSavesVisitor::isSavegameFile(const TCHAR* Filename) const
 {
-	return FPaths::GetExtension(Filename).Equals(SavegameExtension);
+	return FPaths::GetExtension(Filename).Equals(SAVEGAME_EXTENSION);
 }

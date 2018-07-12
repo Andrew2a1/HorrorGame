@@ -13,39 +13,44 @@ class UGameSave : public UObject
 	GENERATED_BODY()
 
 private:
-	FString filepath;
+	UGameSaveData *gameSaveData;
+
+	FString filename;
 	uint8 userIndex;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "GameSave")
 		static TArray<UGameSave*> getAllGameSaves();
 
+	UFUNCTION(BlueprintCallable, Category = "GameSave")
+		static UGameSave* CreateGameSave(UObject *Outer, const FString &Filename);
+
 public:
 	UGameSave();
 	UGameSave(const FString &FilePath, uint8 UserIndex = 0);
 
 	UFUNCTION(BlueprintCallable, Category = "GameSave") 
-		void setFilePath(const FString &FilePath);
+		void setFilename(const FString &FileName);
 
 	UFUNCTION(BlueprintCallable, Category = "GameSave")
-		void setFilePathFromFilename(const FString &Filename);
-
-	UFUNCTION(BlueprintCallable, Category = "GameSave")
-		FString getFilePath() const;
-
-	UFUNCTION(BlueprintCallable, Category = "GameSave")
-		FString getBaseFilename() const;
+		FString getFilename() const;
 
 	UFUNCTION(BlueprintCallable, Category = "GameSave")
 		FDateTime getFileTimeStamp() const;
+
+	UFUNCTION(BlueprintCallable, Category = "GameSave")
+		UGameSaveData *GetSaveData() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "GameSave")
 		bool fileExists() const;
 
-	UFUNCTION(BlueprintCallable, Category = "GameSave") 
-		bool SaveData(UGameSaveData *gameSaveData) const;
+	UFUNCTION(BlueprintCallable, Category = "GameSave")
+		bool SaveData();
 
 	UFUNCTION(BlueprintCallable, Category = "GameSave") 
-		UGameSaveData *LoadData() const;
+		bool LoadData();
+
+private:
+	FString getFullPath() const;
 };
 

@@ -1,4 +1,5 @@
 #include "GameSave.h"
+#include "Debug/DebugToolbox.h"
 
 TArray<UGameSave*> UGameSave::getAllGameSaves()
 {
@@ -6,66 +7,77 @@ TArray<UGameSave*> UGameSave::getAllGameSaves()
 	FFindSavesVisitor visitor;
 	visitor.FindSaves();
 
-	for (const FString &filepath : visitor.GetAllFoundFilePaths())
+	for (const FString &filename : visitor.GetAllFoundSlotNames())
 	{
 		UGameSave *SavegameObject = NewObject<UGameSave>();
-		SavegameObject->setFilePath(filepath);
+		SavegameObject->setFilename(filename);
 		result.Add(SavegameObject);
 	}
 
 	return result;
 }
 
+UGameSave* UGameSave::CreateGameSave(UObject *Outer, const FString &Filename)
+{
+	UGameSave *gamesave = NewObject<UGameSave>(Outer);
+
+	if(gamesave != nullptr)
+		gamesave->setFilename(Filename);
+
+	return gamesave;
+}
+
 UGameSave::UGameSave() :
 	userIndex(0)
 {
-
+	UGameSaveData *gameSaveData = UGameSaveData::CreateGameSaveDataInstance();
 }
 
-UGameSave::UGameSave(const FString &FilePath, uint8 UserIndex) :
-	filepath(FilePath),
+UGameSave::UGameSave(const FString &FileName, uint8 UserIndex) :
+	filename(FileName),
 	userIndex(UserIndex)
 {
-
+	UGameSaveData *gameSaveData = UGameSaveData::CreateGameSaveDataInstance();
 }
 
-void UGameSave::setFilePath(const FString &FilePath)
+void UGameSave::setFilename(const FString &FileName)
 {
-	filepath = FilePath;
+	filename = FileName;
 }
 
-void UGameSave::setFilePathFromFilename(const FString &Filename)
+FString UGameSave::getFullPath() const
 {
-	filepath = FPaths::Combine(FPaths::ProjectSavedDir(), SavegamesDirectory, Filename);
-	filepath = FPaths::SetExtension(filepath, SavegameExtension);
+	FString path = FPaths::Combine(FPaths::ProjectSavedDir(), SAVEGAMES_DIRECTORY, filename);
+	return FPaths::SetExtension(path, SAVEGAME_EXTENSION);
 }
 
-FString UGameSave::getFilePath() const
+FString UGameSave::getFilename() const
 {
-	return filepath;
-}
-
-FString UGameSave::getBaseFilename() const
-{
-	return FPaths::GetBaseFilename(filepath);
+	return filename;
 }
 
 FDateTime UGameSave::getFileTimeStamp() const
 {
-	return FPlatformFileManager::Get().GetPlatformFile().GetTimeStampLocal(*filepath);
+	return FPlatformFileManager::Get().GetPlatformFile().GetTimeStampLocal(*getFullPath());
+}
+
+UGameSaveData *UGameSave::GetSaveData() const
+{
+	return gameSaveData;
 }
 
 bool UGameSave::fileExists() const
 {
-	return FPaths::FileExists(filepath);
+	return FPaths::FileExists(getFullPath());
 }
 
-bool UGameSave::SaveData(UGameSaveData *gameSaveData) const
+bool UGameSave::SaveData()
 {
-	return UGameplayStatics::SaveGameToSlot(gameSaveData, getBaseFilename(), userIndex);
+	return UGameplayStatics::SaveGameToSlot(gameSaveData, filename, userIndex);
 }
 
-UGameSaveData *UGameSave::LoadData() const
+bool UGameSave::LoadData()
 {
-	return Cast<UGameSaveData>(UGameplayStatics::LoadGameFromSlot(getBaseFilename(), userIndex));
+	gameSaveData = Cast<UGameSaveData>(UGameplayStatics::LoadGameFromSlot(filename, userIndex));
+	return static_cast<bool>(gameSaveData);
 }
