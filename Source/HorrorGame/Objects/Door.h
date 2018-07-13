@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "EngineMinimal.h"
+
 #include "GameFramework/Actor.h"
+#include "Sound/SoundCue.h"
 
 #include "DoorSettings.h"
 #include "LockableItem.h"
