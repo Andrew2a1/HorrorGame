@@ -15,6 +15,9 @@ class HORRORGAME_API UGameSaveData : public USaveGame
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
+		FString LevelName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
 		FVector PlayerPosition;
 
 public:
