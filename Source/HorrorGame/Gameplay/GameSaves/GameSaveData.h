@@ -6,6 +6,8 @@
 #include "EngineMinimal.h"
 
 #include "GameFramework/SaveGame.h"
+#include "Gameplay/GameSaves/DoorSaveData.h"
+
 #include "GameSaveData.generated.h"
 
 UCLASS(BlueprintType)
@@ -18,7 +20,10 @@ public:
 		FString LevelName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
-		FVector PlayerPosition;
+		FTransform PlayerTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
+		TArray<FDoorSaveData> DoorsData;
 
 public:
 	static UGameSaveData *CreateGameSaveDataInstance();

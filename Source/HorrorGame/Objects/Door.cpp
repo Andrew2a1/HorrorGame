@@ -21,6 +21,41 @@ void ADoor::BeginPlay()
 	rotationAtStart = normalizeAngle(GetActorRotation().Yaw);
 }
 
+bool ADoor::LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData)
+{
+	if (GameSaveData == nullptr)
+		return false;
+
+	for (const FDoorSaveData &doorData : GameSaveData->DoorsData)
+	{
+		if (doorData.DoorID == GetName())
+		{
+			SetActorRotation(doorData.DoorRotation, ETeleportType::TeleportPhysics);
+			OpenDirection = doorData.OpenDirection;
+			openRequested = doorData.openRequested;
+			movementRequested = doorData.movementRequested;
+		}
+	}
+
+	return true;
+}
+
+bool ADoor::SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const
+{
+	if (GameSaveData == nullptr)
+		return false;
+
+	FDoorSaveData doorData;
+	doorData.DoorID = GetName();
+	doorData.DoorRotation = GetActorRotation();
+	doorData.OpenDirection = OpenDirection;
+	doorData.openRequested = openRequested;
+	doorData.movementRequested = movementRequested;
+	GameSaveData->DoorsData.Add(doorData);
+
+	return true;
+}
+
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
