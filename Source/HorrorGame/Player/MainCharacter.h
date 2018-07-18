@@ -39,11 +39,11 @@ public:
 	void addToEquipment(const FItemDescriptor &item);
 	bool hasItemInEquipment(const FName &itemName);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
 		bool LoadDataFromGameSave(const UGameSaveData *GameSaveData);
 		virtual bool LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
 		bool SaveDataToGameSave(UGameSaveData *GameSaveData) const;
 		virtual bool SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
 
