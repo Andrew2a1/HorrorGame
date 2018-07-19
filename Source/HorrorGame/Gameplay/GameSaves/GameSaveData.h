@@ -17,14 +17,12 @@ class HORRORGAME_API UGameSaveData : public USaveGame
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
-		FString LevelName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
 		FTransform PlayerTransform;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
 		TArray<FDoorSaveData> DoorsData;
 
 public:
-	static UGameSaveData *CreateGameSaveDataInstance();
+	UFUNCTION(BlueprintCallable, Category = "GamesaveData")
+		static UGameSaveData *CreateGameSaveDataInstance();
 };
