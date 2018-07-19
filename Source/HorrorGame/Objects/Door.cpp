@@ -12,6 +12,7 @@ ADoor::ADoor() :
 	PrimaryActorTick.bCanEverTick = true;
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(itemRoot);
 	AudioComponent->bAutoActivate = false;
 }
 

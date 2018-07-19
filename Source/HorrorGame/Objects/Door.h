@@ -31,8 +31,8 @@ public:
 	
 private:
 	UAudioComponent *AudioComponent;
-	DoorOpenDirection OpenDirection;
 
+	DoorOpenDirection OpenDirection;
 	float rotationAtStart;
 	bool openRequested;
 	bool movementRequested;
