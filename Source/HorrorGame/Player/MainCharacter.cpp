@@ -119,7 +119,7 @@ bool AMainCharacter::LoadDataFromGameSave_Implementation(const UGameSaveData *Ga
 	if (GameSaveData == nullptr)
 		return false;
 
-	SetActorLocation(GameSaveData->PlayerPosition,
+	SetActorTransform(GameSaveData->PlayerTransform,
 		false,
 		nullptr,
 		ETeleportType::TeleportPhysics);
@@ -132,7 +132,7 @@ bool AMainCharacter::SaveDataToGameSave_Implementation(UGameSaveData *GameSaveDa
 	if (GameSaveData == nullptr)
 		return false;
 
-	GameSaveData->PlayerPosition = GetActorLocation();
+	GameSaveData->PlayerTransform = GetActorTransform();
 	return true;
 }
 

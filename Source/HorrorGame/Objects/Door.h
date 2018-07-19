@@ -11,10 +11,13 @@
 #include "DoorSettings.h"
 #include "LockableItem.h"
 
+#include "Gameplay/GameSaves/SavableObject.h"
+#include "Gameplay/GameSaves/GameSaveData.h"
+
 #include "Door.generated.h"
 
 UCLASS()
-class HORRORGAME_API ADoor : public ALockableItem
+class HORRORGAME_API ADoor : public ALockableItem, public ISavableObject
 {
 	GENERATED_BODY()
 	
@@ -28,8 +31,8 @@ public:
 	
 private:
 	UAudioComponent *AudioComponent;
-	DoorOpenDirection OpenDirection;
 
+	DoorOpenDirection OpenDirection;
 	float rotationAtStart;
 	bool openRequested;
 	bool movementRequested;
@@ -41,6 +44,14 @@ public:
 	void CloseDoor();
 
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
+		bool LoadDataFromGameSave(const UGameSaveData *GameSaveData);
+		virtual bool LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
+		bool SaveDataToGameSave(UGameSaveData *GameSaveData) const;
+		virtual bool SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
 
 protected:
 	virtual void BeginPlay() override;

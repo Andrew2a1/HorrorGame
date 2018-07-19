@@ -1,6 +1,8 @@
 #include "SaveGameInfo.h"
+
 #include "Gameplay/MainGameInstance.h"
 #include "Gameplay/GameSaves/SavableObject.h"
+#include "Engine/LevelStreaming.h"
 
 TArray<FString> USaveGameInfo::GetAllGameSaveSlots()
 {
@@ -27,35 +29,29 @@ FString USaveGameInfo::GetSaveGameFullPath(const FString &SlotName)
 	return FPaths::SetExtension(path, SAVEGAME_EXTENSION);
 }
 
+#include "Debug/DebugToolbox.h"
+
 bool USaveGameInfo::SaveGame(const FString &SlotName, const UObject *WorldContextObj)
 {
-	UGameSaveData *gameSaveData = Cast<UGameSaveData>(UGameplayStatics::CreateSaveGameObject(UGameSaveData::StaticClass()));
-	TArray<AActor*> savableActors = GetAllSavableActors(WorldContextObj);
-	
-	for (AActor *savableActor : savableActors)
+	UGameSaveData *gameSaveData = UGameSaveData::CreateGameSaveDataInstance();
+
+	for (AActor *savableActor : GetAllSavableActors(WorldContextObj))
 	{
 		ISavableObject *savable = Cast<ISavableObject>(savableActor);
-
 		if (savable)
 			savable->Execute_SaveDataToGameSave(savableActor, gameSaveData);
 	}
 
-	gameSaveData->LevelName = UGameplayStatics::GetCurrentLevelName(WorldContextObj);
 	return UGameplayStatics::SaveGameToSlot(gameSaveData, SlotName, DEFAULT_USER_INDEX);
 }
 
 bool USaveGameInfo::LoadGame(const FString &SlotName, const UObject *WorldContextObj)
 {
 	UGameSaveData *gameSaveData = Cast<UGameSaveData>(UGameplayStatics::LoadGameFromSlot(SlotName, DEFAULT_USER_INDEX));
-	UMainGameInstance *gameInstance = Cast<UMainGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObj));
 
-	UGameplayStatics::OpenLevel(WorldContextObj, FName(*gameSaveData->LevelName));
-	
-	TArray<AActor*> savableActors = GetAllSavableActors(gameInstance->WorldContextObject);
-	for (AActor *savableActor : savableActors)
+	for (AActor *savableActor : GetAllSavableActors(WorldContextObj))
 	{
 		ISavableObject *savable = Cast<ISavableObject>(savableActor);
-
 		if (savable)
 			savable->Execute_LoadDataFromGameSave(savableActor, gameSaveData);
 	}
