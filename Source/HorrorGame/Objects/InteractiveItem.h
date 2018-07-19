@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "EngineMinimal.h"
-#include "Components/WidgetComponent.h"
-
 #include "CoreMinimal.h"
+#include "EngineMinimal.h"
+
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
+
 #include "InteractiveItem.generated.h"
 
 UCLASS()

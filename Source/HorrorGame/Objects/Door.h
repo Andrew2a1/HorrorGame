@@ -2,17 +2,22 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
+#include "EngineMinimal.h"
+
+#include "GameFramework/Actor.h"
+#include "Sound/SoundCue.h"
+
 #include "DoorSettings.h"
 #include "LockableItem.h"
 
-#include "CoreMinimal.h"
-#include "EngineMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Gameplay/GameSaves/SavableObject.h"
+#include "Gameplay/GameSaves/GameSaveData.h"
 
 #include "Door.generated.h"
 
 UCLASS()
-class HORRORGAME_API ADoor : public ALockableItem
+class HORRORGAME_API ADoor : public ALockableItem, public ISavableObject
 {
 	GENERATED_BODY()
 	
@@ -25,19 +30,28 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Door") float openDoorAngle;
 	
 private:
-	UAudioComponent *audioComponent;
-	DoorOpenDirection direction;
+	UAudioComponent *AudioComponent;
 
+	DoorOpenDirection OpenDirection;
 	float rotationAtStart;
 	bool openRequested;
 	bool movementRequested;
 
 public:
 	ADoor();
-	virtual void Tick(float DeltaTime) override;
 
 	void OpenDoor(DoorOpenDirection openDirection);
 	void CloseDoor();
+
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
+		bool LoadDataFromGameSave(const UGameSaveData *GameSaveData);
+		virtual bool LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
+		bool SaveDataToGameSave(UGameSaveData *GameSaveData) const;
+		virtual bool SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -47,20 +61,19 @@ protected:
 	virtual void succeededUnlock(AActor *other) override;
 
 private:
+	void openRightDirection(AActor *other);
 	void performDoorOpen(float DeltaTime);
-
-	float getTargetRotation() const;
-	float getOpenSpeed() const;
-	
-	inline bool needRotationToOpen(float currentRotation, float targetRotation) const;
-	inline bool needRotationToClose(float currentRotation) const;
-	
 	void rotate(float angle);
 	void endDoorMovement();
 
-	void openRightDirection(AActor *other);
 	void playSoundIfValid(USoundCue *soundCue);
+
+	float getTargetRotation() const;
+	float getOpenSpeed() const;
 
 	float getAngleBetweenVectors(const FVector &arg1, const FVector &arg2) const;
 	float normalizeAngle(float angle) const;
+
+	inline bool needRotationToOpen(float currentRotation, float targetRotation) const;
+	inline bool needRotationToClose(float currentRotation) const;
 };

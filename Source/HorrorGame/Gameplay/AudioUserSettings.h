@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include "AudioOptions.h"
 
 #include "CoreMinimal.h"
 #include "EngineMinimal.h"
-#include "ConfigCacheIni.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "ConfigCacheIni.h"
+
+#include "AudioOptions.h"
 #include "AudioUserSettings.generated.h"
 
 UCLASS(BlueprintType)
@@ -30,16 +31,29 @@ public:
 	UAudioUserSettings();
 	UAudioUserSettings(USoundMix *BaseSoundMix, const FSoundClasses &SoundClasses);
 
-	UFUNCTION(BlueprintCallable) void Init(USoundMix *BaseSoundMix, const FSoundClasses &SoundClasses);
-	UFUNCTION(BlueprintCallable) void ChangeWorld(UObject *WorldContextObject);
+	UFUNCTION(BlueprintCallable)
+		void Init(USoundMix *BaseSoundMix, const FSoundClasses &SoundClasses);
 
-	UFUNCTION(BlueprintCallable, Category = "AudioSettings") bool LoadSettings();
-	UFUNCTION(BlueprintCallable, Category = "AudioSettings") void SaveSettings() const;
+	UFUNCTION(BlueprintCallable)
+		void ChangeWorld(UObject *WorldContextObject);
 
-	UFUNCTION(BlueprintCallable, Category = "AudioSettings") void ChangeMasterVolume(float NewVolume);
-	UFUNCTION(BlueprintCallable, Category = "AudioSettings") void ChangeMusicVolume(float NewVolume);
-	UFUNCTION(BlueprintCallable, Category = "AudioSettings") void ChangeEffectsVolume(float NewVolume);
-	UFUNCTION(BlueprintCallable, Category = "AudioSettings") void ChangeDialogueVolume(float NewVolume);
+	UFUNCTION(BlueprintCallable, Category = "AudioSettings")
+		bool LoadSettings();
+
+	UFUNCTION(BlueprintCallable, Category = "AudioSettings")
+		void SaveSettings() const;
+
+	UFUNCTION(BlueprintCallable, Category = "AudioSettings")
+		void ChangeMasterVolume(float NewVolume);
+
+	UFUNCTION(BlueprintCallable, Category = "AudioSettings")
+		void ChangeMusicVolume(float NewVolume);
+
+	UFUNCTION(BlueprintCallable, Category = "AudioSettings")
+		void ChangeEffectsVolume(float NewVolume);
+
+	UFUNCTION(BlueprintCallable, Category = "AudioSettings")
+		void ChangeDialogueVolume(float NewVolume);
 
 private:
 	float GetAudioVolumeForKey(const TCHAR *Key) const;

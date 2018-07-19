@@ -6,7 +6,7 @@
 #include "EngineMinimal.h"
 
 #include "GameFramework/SaveGame.h"
-#include "Kismet/GameplayStatics.h"
+#include "Gameplay/GameSaves/DoorSaveData.h"
 
 #include "GameSaveData.generated.h"
 
@@ -17,8 +17,12 @@ class HORRORGAME_API UGameSaveData : public USaveGame
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
-		FVector PlayerPosition;
+		FTransform PlayerTransform;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GamesaveData")
+		TArray<FDoorSaveData> DoorsData;
 
 public:
-	static UGameSaveData *CreateGameSaveDataInstance();
+	UFUNCTION(BlueprintCallable, Category = "GamesaveData")
+		static UGameSaveData *CreateGameSaveDataInstance();
 };

@@ -4,14 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "EngineMinimal.h"
-
 #include "GameFramework/Character.h"
 
 #include "Flashlight.h"
 #include "Objects/InteractiveItem.h"
 #include "Objects/ItemDescriptor.h"
-
-#include "Gameplay/GameSaves/GameSave.h"
 #include "Gameplay/GameSaves/SavableObject.h"
 
 #include "MainCharacter.generated.h"
@@ -42,13 +39,13 @@ public:
 	void addToEquipment(const FItemDescriptor &item);
 	bool hasItemInEquipment(const FName &itemName);
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
-		void LoadDataFromGameSave(const UGameSaveData *GameSaveData);
-		virtual void LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
+		bool LoadDataFromGameSave(const UGameSaveData *GameSaveData);
+		virtual bool LoadDataFromGameSave_Implementation(const UGameSaveData *GameSaveData) override;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "MyCategory")
-		void SaveDataToGameSave(UGameSaveData *GameSaveData) const;
-		virtual void SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "SaveGame")
+		bool SaveDataToGameSave(UGameSaveData *GameSaveData) const;
+		virtual bool SaveDataToGameSave_Implementation(UGameSaveData *GameSaveData) const override;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -59,9 +56,6 @@ protected:
 private:
 	AActor *getPointerTarget();
 	bool isActorInPlayerRange(AActor *target);
-
-	inline bool userStartedPointingAtItem(const AInteractiveItem *item) const;
-	inline bool userEndedPointingAtItem(const AInteractiveItem *item) const;
 
 	void moveForward(float Value);
 	void moveRight(float Value);
@@ -79,4 +73,7 @@ private:
 	void toggleFlashlight();
 
 	void printDebug();
+
+	inline bool userStartedPointingAtItem(const AInteractiveItem *item) const;
+	inline bool userEndedPointingAtItem(const AInteractiveItem *item) const;
 };
