@@ -29,8 +29,6 @@ FString USaveGameInfo::GetSaveGameFullPath(const FString &SlotName)
 	return FPaths::SetExtension(path, SAVEGAME_EXTENSION);
 }
 
-#include "Debug/DebugToolbox.h"
-
 bool USaveGameInfo::SaveGame(const FString &SlotName, const UObject *WorldContextObj)
 {
 	UGameSaveData *gameSaveData = UGameSaveData::CreateGameSaveDataInstance();
