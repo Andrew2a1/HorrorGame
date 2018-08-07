@@ -2,6 +2,11 @@
 
 #include "MainGameInstance.h"
 
+FString UMainGameInstance::GetSaveGameName() const
+{
+	return SaveGameSlot;
+}
+
 void UMainGameInstance::RequestGameLoad(const FString &SaveSlot)
 {
 	SaveGameSlot = SaveSlot;

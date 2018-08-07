@@ -17,6 +17,9 @@ private:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+		FString GetSaveGameName() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 		void RequestGameLoad(const FString &SaveSlot);
 
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
